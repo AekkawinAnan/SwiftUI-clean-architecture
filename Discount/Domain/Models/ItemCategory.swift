@@ -5,8 +5,8 @@
 
 import Foundation
 
-/// Product categories targeted by the "Percentage Discount by Item Category" on-top campaign.
-/// `nonisolated`: pure domain value — no actor affinity (the project defaults to MainActor).
+/// หมวดหมู่สินค้า ใช้กับแคมเปญ on-top "ส่วนลดเปอร์เซ็นต์ตามหมวดหมู่สินค้า"
+/// `nonisolated`: เป็นค่าในโดเมนล้วน ๆ ไม่ผูกกับ actor ใด (โปรเจกต์ตั้ง default isolation เป็น MainActor).
 nonisolated enum ItemCategory: String, Codable, CaseIterable, Hashable {
     case clothing
     case accessories

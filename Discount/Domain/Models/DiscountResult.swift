@@ -5,18 +5,18 @@
 
 import Foundation
 
-/// One row of the step-by-step breakdown: what was applied, on what amount,
-/// how much was discounted, and what remained afterwards.
+/// หนึ่งแถวของการแจกแจงแบบทีละขั้น: ใช้แคมเปญใด กับยอดเท่าไร
+/// ลดไปเท่าไร และเหลือยอดรวมเท่าไร
 nonisolated struct DiscountStep: Identifiable, Hashable {
     let id: UUID
     let campaign: DiscountCampaign
-    /// Total BEFORE this campaign was applied (input).
+    /// ยอดรวมก่อนใช้แคมเปญนี้ (ข้อมูลนำเข้า).
     let amountBefore: Decimal
-    /// How much this campaign actually discounted (after caps/clamps).
+    /// ยอดที่ถูกลดจริง (หลังผ่านการ cap/clamp).
     let discountApplied: Decimal
-    /// Total AFTER this campaign was applied (output → next step's input).
+    /// ยอดรวมหลังใช้แคมเปญนี้ (ผลลัพธ์ → เป็นข้อมูลนำเข้าของขั้นถัดไป).
     let amountAfter: Decimal
-    /// Optional human-readable explanation, e.g. why a cap kicked in.
+    /// คำอธิบายสำหรับผู้ใช้ (ไม่บังคับ) เช่น เหตุผลที่เจอเพดาน cap.
     let note: String?
 
     init(
@@ -36,22 +36,22 @@ nonisolated struct DiscountStep: Identifiable, Hashable {
     }
 }
 
-/// The complete outcome of a calculation: subtotal, every applied step, final price.
+/// ผลลัพธ์ที่สมบูรณ์ของการคำนวณ: subtotal, ทุกขั้นตอนที่ใช้ และราคาสุดท้าย.
 nonisolated struct DiscountCalculationResult: Hashable {
     let subtotal: Decimal
     let steps: [DiscountStep]
     let finalPrice: Decimal
 
-    /// Math: total savings = subtotal − final price.
+    /// คำนวณ: ส่วนลดรวม = subtotal − ราคาสุดท้าย.
     var totalDiscount: Decimal { subtotal - finalPrice }
 
     var hasAnyDiscount: Bool { !steps.isEmpty }
 }
 
-// MARK: - Errors
+// MARK: - ข้อผิดพลาด
 
-/// Thrown for *invalid campaign configurations*. (Over-discounting is NOT an error —
-/// it is gracefully clamped so the final price never drops below zero.)
+/// throw เมื่อ *configuration ของแคมเปญไม่ถูกต้อง* (ส่วนลดที่ "ลดเกิน" ไม่ถือเป็น error —
+/// ระบบจะ clamp อย่างนุ่มนวลเพื่อไม่ให้ราคาสุดท้ายติดลบแทน)
 nonisolated enum DiscountError: LocalizedError, Equatable {
     case negativeFixedAmount
     case percentageOutOfRange(Decimal)

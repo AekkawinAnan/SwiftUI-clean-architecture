@@ -6,19 +6,19 @@
 import XCTest
 @testable import Discount
 
-/// ViewModel behavior: Rule-1 selection slots, points input validation,
-/// live recalculation, and reset.
+/// พฤติกรรมของ ViewModel: slot เลือกแคมเปญตามกติกาข้อ 1 การ validate input คะแนน
+/// การคำนวณใหม่แบบเรียลไทม์ และการ reset.
 @MainActor
 final class CartViewModelTests: XCTestCase {
 
     func testViewModelAllowsAtMostOneCampaignPerCategory() {
-        // Given: one selection per category slot (Rule 1 by design).
+        // Given: เลือกได้หมวดหมู่ละหนึ่ง slot (กติกาข้อ 1 จากการออกแบบ).
         let viewModel = CartViewModel()
         viewModel.couponOption = .percentage(10)
         viewModel.onTopOption = .categoryPercentage(percent: 20)
         viewModel.seasonalOption = .seasonal(perAmount: 300, discount: 40)
 
-        // Then: three campaigns, exactly one per category, in pipeline order.
+        // Then: ได้สามแคมเปญ หมวดหมู่ละพอดีหนึ่ง ตามลำดับ pipeline.
         let selected = viewModel.selectedCampaigns
         XCTAssertEqual(selected.count, 3)
         XCTAssertEqual(selected.map(\.category), [.coupon, .onTop, .seasonal])
@@ -29,7 +29,7 @@ final class CartViewModelTests: XCTestCase {
         viewModel.onTopOption = .points
         viewModel.pointsText = "abc"
 
-        // Invalid input → no campaign is built, no error thrown, price untouched.
+        // Input ไม่ถูกต้อง → ไม่สร้างแคมเปญ ไม่ throw error ราคาไม่เปลี่ยน.
         XCTAssertTrue(viewModel.selectedCampaigns.isEmpty)
         XCTAssertNotNil(viewModel.pointsInputError)
         XCTAssertEqual(viewModel.result.finalPrice, viewModel.result.subtotal)
@@ -68,7 +68,7 @@ final class CartViewModelTests: XCTestCase {
 
     func testLiveRecalculationReflectsSelectionChanges() {
         let viewModel = CartViewModel()
-        // Subtotal of the mock cart: 700 + 999 + 250 + 1299 = 3248
+        // Subtotal ของ mock cart: 700 + 999 + 250 + 1299 = 3248
         assertDecimalEqual(viewModel.result.subtotal, 3248)
         XCTAssertEqual(viewModel.result.finalPrice, viewModel.result.subtotal)
 

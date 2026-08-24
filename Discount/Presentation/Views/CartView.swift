@@ -5,8 +5,8 @@
 
 import SwiftUI
 
-/// Main screen: cart items, campaign selection (max 1 per category) and the
-/// live step-by-step price summary.
+/// หน้าจอหลัก: สินค้าในตะกร้า การเลือกแคมเปญ (หมวดหมู่ละ 1)
+/// และสรุปราคาแบบทีละขั้นแบบเรียลไทม์.
 struct CartView: View {
     @State private var viewModel = CartViewModel()
 
@@ -41,7 +41,7 @@ struct CartView: View {
         }
     }
 
-    // MARK: Sections
+    // MARK: ส่วนต่าง ๆ ของหน้าจอ
 
     private var cartSection: some View {
         Section("Cart Items") {
@@ -64,7 +64,7 @@ struct CartView: View {
     }
 
     private func dismissError() {
-        // Re-triggering recalculation clears the stored error without changing selections.
+        // สั่งคำนวณใหม่เพื่อเคลียร์ error ที่เก็บไว้ โดยไม่เปลี่ยนการเลือกแคมเปญ.
         viewModel.reset()
     }
 }

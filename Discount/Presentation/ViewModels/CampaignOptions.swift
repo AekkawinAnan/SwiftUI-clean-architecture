@@ -5,13 +5,13 @@
 
 import Foundation
 
-// MARK: - Picker-facing option models
+// MARK: - โมเดล options สำหรับ Picker
 //
-// These wrap `DiscountCampaign` for SwiftUI `Picker`s. They keep Rule 1
-// (max one campaign per category) trivially enforceable in the UI: the
-// ViewModel stores exactly ONE option per category.
+// ตัวห่อ `DiscountCampaign` สำหรับ SwiftUI `Picker` ทำให้บังคับกติกาข้อ 1
+// (หนึ่งหมวดหมู่เลือกได้สูงสุด 1 แคมเปญ) ใน UI ได้โดยง่าย:
+// ViewModel เก็บ option ได้ "หนึ่งเดียว" ต่อหมวดหมู่
 
-/// Options for the **Coupon** category.
+/// Options ของหมวด **Coupon**.
 enum CouponOption: Hashable, Identifiable {
     case none
     case fixedAmount(Decimal)
@@ -44,7 +44,7 @@ enum CouponOption: Hashable, Identifiable {
     ]
 }
 
-/// Options for the **On Top** category.
+/// Options ของหมวด **On Top**.
 enum OnTopOption: Hashable, Identifiable {
     case none
     case categoryPercentage(percent: Decimal)
@@ -60,9 +60,9 @@ enum OnTopOption: Hashable, Identifiable {
         }
     }
 
-    /// Builds the concrete campaign.
-    /// Returns `nil` when the option is `.none` or when the free-form points
-    /// input is missing/invalid/zero — defensive against bad text input.
+    /// สร้างแคมเปญที่ใช้งานจริง
+    /// คืน `nil` เมื่อ option เป็น `.none` หรือข้อความคะแนน
+    /// ว่าง/ไม่ถูกต้อง/เป็นศูนย์ — ป้องกัน input ข้อความที่ผิดพลาด.
     func campaign(category: ItemCategory, pointsText: String) -> DiscountCampaign? {
         switch self {
         case .none:
@@ -77,8 +77,8 @@ enum OnTopOption: Hashable, Identifiable {
         }
     }
 
-    /// Parses free-form user input into a non-negative point amount.
-    /// Returns `nil` for empty or unparseable text (e.g. "abc", "-5").
+    /// แปลงข้อความอิสระจากผู้ใช้เป็นจำนวนคะแนนที่ไม่ติดลบ
+    /// คืน `nil` เมื่อข้อความว่างหรือแปลงไม่ได้ (เช่น "abc", "-5").
     static func parsedPoints(from text: String) -> Decimal? {
         let cleaned = text.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !cleaned.isEmpty, let value = Decimal(string: cleaned), value >= 0 else {
@@ -95,7 +95,7 @@ enum OnTopOption: Hashable, Identifiable {
     ]
 }
 
-/// Options for the **Seasonal** category ("for every X THB subtract Y THB").
+/// Options ของหมวด **Seasonal** ("ทุก X บาท หัก Y บาท").
 enum SeasonalOption: Hashable, Identifiable {
     case none
     case seasonal(perAmount: Decimal, discount: Decimal)

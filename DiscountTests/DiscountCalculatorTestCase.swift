@@ -2,18 +2,18 @@
 //  DiscountCalculatorTestCase.swift
 //  DiscountTests
 //
-//  Shared fixture & assertion helpers for all discount engine tests.
+//  Fixture และ assertion helpers ที่ใช้ร่วมกันของทุกชุด test เอนจินส่วนลด.
 //
 
 import XCTest
 @testable import Discount
 
-/// Base class for the discount engine test suites.
+/// Base class ของชุด test เอนจินส่วนลดทุกชุด.
 class DiscountCalculatorTestCase: XCTestCase {
 
     var sut: DiscountCalculator!
 
-    /// Fixture: 500×2 (Clothing) + 200×1 (Accessories) + 150×1 (Electronics) = 1,350 THB
+    /// Fixture: 500×2 (เสื้อผ้า) + 200×1 (เครื่องประดับ) + 150×1 (อิเล็กทรอนิกส์) = 1,350 บาท
     let cart = [
         CartItem(name: "Shirt", category: .clothing, price: 500, quantity: 2),
         CartItem(name: "Hat", category: .accessories, price: 200, quantity: 1),
@@ -30,7 +30,7 @@ class DiscountCalculatorTestCase: XCTestCase {
         super.tearDown()
     }
 
-    // MARK: Helpers
+    // MARK: ตัวช่วย
 
     func calculate(
         _ campaigns: [DiscountCampaign],
@@ -51,7 +51,7 @@ class DiscountCalculatorTestCase: XCTestCase {
     }
 }
 
-/// Exact equality for `Decimal` money values.
+/// เทียบค่าเงิน `Decimal` แบบ exact equality.
 func assertDecimalEqual(
     _ lhs: Decimal,
     _ rhs: Decimal,

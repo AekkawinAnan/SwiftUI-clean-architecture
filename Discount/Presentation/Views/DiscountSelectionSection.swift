@@ -5,8 +5,8 @@
 
 import SwiftUI
 
-/// One `Picker` per discount category (Rule 1: max one selection each),
-/// plus conditional sub-controls for parameterized on-top campaigns.
+/// `Picker` หนึ่งตัวต่อหนึ่งหมวดหมู่ส่วนลด (กติกาข้อ 1: เลือกได้หมวดละ 1)
+/// พร้อม control เสริมแบบมีเงื่อนไขสำหรับแคมเปญ on-top ที่มี parameter.
 struct DiscountSelectionSection: View {
     @Bindable var viewModel: CartViewModel
 
@@ -75,8 +75,8 @@ struct DiscountSelectionSection: View {
                     .font(.caption)
                     .foregroundStyle(.red)
             } else if let points = OnTopOption.parsedPoints(from: viewModel.pointsText), points > 0 {
-                // Build as plain String: Decimal must not be interpolated directly
-                // into `Text` (localized-interpolation deprecation).
+                // สร้างเป็น String ธรรมดา: ห้าม interpolate Decimal ลงใน `Text` โดยตรง
+                // (API interpolation แบบ localized ถูก deprecated แล้ว).
                 let summary = "\(points) pt = \(points.thb) (max 20% of current total)"
                 Text(summary)
                     .font(.caption)

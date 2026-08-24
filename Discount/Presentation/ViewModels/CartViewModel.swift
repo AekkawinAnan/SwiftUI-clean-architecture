@@ -6,33 +6,33 @@
 import Foundation
 import Observation
 
-/// Manages cart state, campaign selection (Business Rule 1) and drives the
-/// `DiscountCalculator` engine. Rebuilds the result whenever any input changes.
+/// จัดการ state ของตะกร้า การเลือกแคมเปญ (กติกาข้อ 1) และสั่งงาน
+/// เอนจิน `DiscountCalculator` คำนวณ result ใหม่ทุกครั้งที่ input เปลี่ยน.
 @MainActor
 @Observable
 final class CartViewModel {
 
-    // MARK: Dependencies (injected → easy to unit test / swap implementations)
+    // MARK: Dependencies (inject เข้ามา → test ง่าย / เปลี่ยน implementation ได้)
 
     private let calculator: any DiscountCalculating
 
-    // MARK: State
+    // MARK: State (สถานะ)
 
     private(set) var cartItems: [CartItem]
 
-    // One option per category — Rule 1 (max 1 campaign per category) is
-    // enforced by design because there is exactly one selection slot each.
+    // หนึ่ง option ต่อหนึ่งหมวดหมู่ — กติกาข้อ 1 (เลือกได้หมวดละ 1 แคมเปญ)
+    // ถูกบังคับด้วยการออกแบบ เพราะมี slot เลือกเพียง slot เดียวต่อหมวดหมู่.
     var couponOption: CouponOption = .none { didSet { recalculate() } }
     var onTopOption: OnTopOption = .none { didSet { recalculate() } }
     var seasonalOption: SeasonalOption = .none { didSet { recalculate() } }
 
-    /// Only relevant when an "…% Off Category" on-top option is selected.
+    /// มีผลเฉพาะเมื่อเลือก option on-top แบบ "…% Off Category".
     var onTopCategory: ItemCategory = .clothing { didSet { recalculate() } }
 
-    /// Free-form text field backing the points campaign.
+    /// ช่องข้อความอิสระที่รองรับแคมเปญคะแนนสะสม.
     var pointsText: String = "" { didSet { recalculate() } }
 
-    // Output state
+    // State ผลลัพธ์
     private(set) var result: DiscountCalculationResult
     private(set) var lastError: DiscountError?
 
@@ -48,9 +48,9 @@ final class CartViewModel {
         recalculate()
     }
 
-    // MARK: Derived state
+    // MARK: State ที่ derive เพิ่ม
 
-    /// All currently selected campaigns — at most one per category (Rule 1).
+    /// แคมเปญที่เลือกอยู่ทั้งหมด — ไม่เกินหมวดหมู่ละ 1 (กติกาข้อ 1).
     var selectedCampaigns: [DiscountCampaign] {
         [
             couponOption.campaign,
@@ -60,7 +60,7 @@ final class CartViewModel {
         .compactMap(\.self)
     }
 
-    /// Non-nil when the user picked "Redeem Points" but typed something unusable.
+    /// ไม่เป็น nil เมื่อผู้ใช้เลือก "Redeem Points" แต่พิมพ์ค่าที่ใช้งานไม่ได้.
     var pointsInputError: String? {
         guard onTopOption == .points else { return nil }
         let parsed = OnTopOption.parsedPoints(from: pointsText)
@@ -73,12 +73,12 @@ final class CartViewModel {
         return nil
     }
 
-    /// True when at least one campaign is active.
+    /// true เมื่อมีแคมเปญที่ใช้งานอยู่อย่างน้อยหนึ่งแคมเปญ.
     var hasSelection: Bool { !selectedCampaigns.isEmpty }
 
     // MARK: Actions
 
-    /// Clears every selection back to a pristine state.
+    /// เคลียร์ทุกการเลือกกลับสู่สถานะเริ่มต้น.
     func reset() {
         couponOption = .none
         onTopOption = .none
@@ -97,7 +97,7 @@ final class CartViewModel {
                 campaigns: selectedCampaigns
             )
         } catch {
-            // Defensive fallback: show undiscounted totals and surface the problem.
+            // Fallback ป้องกันตัว: แสดงยอดแบบไม่หักส่วนลด และแจ้งปัญหาออกมา.
             let subtotal = Decimal.roundedMoney(
                 cartItems.reduce(Decimal.zero) { $0 + $1.lineTotal }
             )

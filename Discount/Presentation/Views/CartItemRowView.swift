@@ -5,7 +5,7 @@
 
 import SwiftUI
 
-/// A single line item: icon, name, category badge, quantity × price, line total.
+/// รายการสินค้าหนึ่งแถว: ไอคอน, ชื่อ, badge หมวดหมู่, จำนวน × ราคา และยอดรวมของรายการ.
 struct CartItemRowView: View {
     let item: CartItem
 
@@ -43,7 +43,7 @@ struct CartItemRowView: View {
     }
 }
 
-// MARK: - Presentation-only category styling
+// MARK: - สไตล์ประจำหมวดหมู่ (เฉพาะฝั่ง presentation)
 
 private extension ItemCategory {
     var systemImage: String {

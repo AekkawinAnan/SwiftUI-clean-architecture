@@ -6,7 +6,7 @@
 import XCTest
 @testable import Discount
 
-/// Coupon campaigns: Fixed Amount and Percentage.
+/// แคมเปญคูปอง: จำนวนเงินคงที่ และแบบเปอร์เซ็นต์.
 final class DiscountCalculatorCouponTests: DiscountCalculatorTestCase {
 
     // MARK: Subtotal
@@ -18,7 +18,7 @@ final class DiscountCalculatorCouponTests: DiscountCalculatorTestCase {
         XCTAssertTrue(result.steps.isEmpty)
     }
 
-    // MARK: Fixed Amount
+    // MARK: จำนวนเงินคงที่
 
     func testFixedAmountCouponSubtractsFromTotal() throws {
         let result = try calculate([.fixedAmount(amount: 100)])
@@ -28,7 +28,7 @@ final class DiscountCalculatorCouponTests: DiscountCalculatorTestCase {
     }
 
     func testFixedAmountLargerThanTotalClampsToZero() throws {
-        // Edge case: total must never drop below zero.
+        // Edge case: ยอดรวมห้ามติดลบเด็ดขาด.
         let result = try calculate([.fixedAmount(amount: 2000)])
         assertDecimalEqual(result.steps[0].discountApplied, 1350)
         assertDecimalEqual(result.finalPrice, 0)
@@ -38,7 +38,7 @@ final class DiscountCalculatorCouponTests: DiscountCalculatorTestCase {
         assertThrows(.negativeFixedAmount, campaigns: [.fixedAmount(amount: -5)])
     }
 
-    // MARK: Percentage
+    // MARK: เปอร์เซ็นต์
 
     func testPercentageCoupon() throws {
         let result = try calculate([.percentage(percent: 10)])
@@ -52,9 +52,9 @@ final class DiscountCalculatorCouponTests: DiscountCalculatorTestCase {
     }
 
     func testPercentageCouponRoundsHalfAwayFromZero() throws {
-        // 133.35 × 10% = 13.335 → rounds half-away-from-zero to 13.34 → final = 120.01.
-        // NOTE: money fixtures are built via String on purpose — Decimal(Double)
-        // inherits binary floating-point error (e.g. 120.01 → 120.01000000000002…).
+        // 133.35 × 10% = 13.335 → ปัดครึ่งออกจากศูนย์ได้ 13.34 → ราคาสุดท้าย = 120.01.
+        // NOTE: สร้าง fixture ค่าเงินจาก String ตั้งใจไว้แล้ว — Decimal(Double)
+        // สืบทอดข้อผิดพลาดจุดลอยแบบ binary (เช่น 120.01 → 120.01000000000002…).
         let oddPrice = try XCTUnwrap(Decimal(string: "133.35"))
         let expectedDiscount = try XCTUnwrap(Decimal(string: "13.34"))
         let expectedFinal = try XCTUnwrap(Decimal(string: "120.01"))

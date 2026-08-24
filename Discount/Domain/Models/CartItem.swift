@@ -5,8 +5,8 @@
 
 import Foundation
 
-/// A single line item in the shopping cart.
-/// Money is modelled with `Decimal` to avoid floating-point rounding artifacts.
+/// รายการสินค้าหนึ่งบรรทัดในตะกร้า
+/// ค่าเงินใช้ประเภท `Decimal` เพื่อหลีกเลี่ยงข้อผิดพลาดการปัดเศษของจุดลอย (floating-point).
 nonisolated struct CartItem: Identifiable, Hashable, Codable {
     let id: UUID
     let name: String
@@ -28,11 +28,11 @@ nonisolated struct CartItem: Identifiable, Hashable, Codable {
         self.quantity = quantity
     }
 
-    /// Math: line total = unit price × quantity.
+    /// คำนวณ: ยอดรวมของรายการ = ราคาต่อชิ้น × จำนวนชิ้น.
     var lineTotal: Decimal { price * Decimal(quantity) }
 }
 
-// MARK: - Mock Data (the assignment asks NOT to build an inventory system)
+// MARK: - ข้อมูล Mock (โจทย์กำหนดให้ไม่ต้องสร้างระบบ inventory จริง)
 
 extension CartItem {
     nonisolated static let mockCart: [CartItem] = [

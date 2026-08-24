@@ -5,9 +5,9 @@
 
 import Foundation
 
-// MARK: - Discount Categories (Business Rule 1: MAX 1 campaign per category)
+// MARK: - หมวดหมู่ส่วนลด (กติกาข้อ 1: หนึ่งหมวดหมู่เลือกได้สูงสุด 1 แคมเปญ)
 
-/// The three discount categories. The user may select at most one campaign from each.
+/// หมวดหมู่ส่วนลดทั้งสาม ผู้ใช้เลือกได้หมวดหมู่ละไม่เกิน 1 แคมเปญ.
 nonisolated enum DiscountCategory: String, Codable, CaseIterable, Hashable, Identifiable {
     case coupon
     case onTop = "on_top"
@@ -23,7 +23,7 @@ nonisolated enum DiscountCategory: String, Codable, CaseIterable, Hashable, Iden
         }
     }
 
-    /// Encodes Business Rule 2: campaigns MUST be applied Coupon → On Top → Seasonal.
+    /// สะท้อนกติกาข้อ 2: แคมเปญต้องถูกใช้ตามลำดับ คูปอง → On Top → Seasonal เท่านั้น.
     var applicationOrder: Int {
         switch self {
         case .coupon: 0
@@ -33,30 +33,30 @@ nonisolated enum DiscountCategory: String, Codable, CaseIterable, Hashable, Iden
     }
 }
 
-// MARK: - Campaigns (enum with associated values)
+// MARK: - แคมเปญ (enum พร้อม associated values)
 
-/// A single, immutable, type-safe description of one discount campaign.
-/// Associated values make it impossible to construct, e.g., a percentage discount
-/// without a rate, or a seasonal campaign without both X and Y.
+/// คำอธิบายของแคมเปญส่วนลดหนึ่งแคมเปญ ซึ่ง immutable และ type-safe
+/// การใช้ associated values ทำให้สร้างแคมเปญที่ข้อมูลไม่ครบไม่ได้ เช่น
+/// ส่วนลดเปอร์เซ็นต์ที่ไม่ระบุอัตรา หรือแคมเปญตามฤดูกาลที่ไม่ครบทั้ง X และ Y.
 nonisolated enum DiscountCampaign: Hashable, Codable {
-    /// **Coupon** — subtracts a fixed THB amount from the total.
+    /// **คูปอง** — หักจากยอดรวมเป็นจำนวนเงินคงที่ (บาท).
     case fixedAmount(amount: Decimal)
 
-    /// **Coupon** — subtracts `percent`% (0...100) from the total.
+    /// **คูปอง** — หัก `percent`% (0...100) จากยอดรวม.
     case percentage(percent: Decimal)
 
-    /// **On Top** — `percent`% calculated ONLY from the subtotal of items
-    /// in `category`, then subtracted from the current total.
+    /// **On Top** — คำนวณ `percent`% จากยอดรวมของสินค้า "เฉพาะหมวดหมู่ `category`"
+    /// เท่านั้น แล้วนำไปหักจากยอดรวมปัจจุบัน.
     case percentageByCategory(percent: Decimal, category: ItemCategory)
 
-    /// **On Top** — 1 point = 1 THB; capped at 20% of the CURRENT total (post-coupon).
+    /// **On Top** — 1 คะแนน = 1 บาท โดยจำกัดส่วนลดไม่เกิน 20% ของยอดรวม "ปัจจุบัน" (หลังหักคูปอง).
     case points(count: Decimal)
 
-    /// **Seasonal** — for every `perAmount` THB of the CURRENT total
-    /// (post-coupon, post-on-top), subtract `discount` THB.
+    /// **Seasonal** — ทุกยอด `perAmount` บาท ของยอดรวม "ปัจจุบัน"
+    /// (หลังหักคูปองและ on-top แล้ว) จะหัก `discount` บาท.
     case seasonal(perAmount: Decimal, discount: Decimal)
 
-    /// Which of the three categories this campaign belongs to (drives Rules 1 & 2).
+    /// แคมเปญนี้อยู่ในหมวดหมู่ใด (ใช้บังคับกติกาข้อ 1 และ 2).
     var category: DiscountCategory {
         switch self {
         case .fixedAmount, .percentage: .coupon
@@ -65,7 +65,7 @@ nonisolated enum DiscountCampaign: Hashable, Codable {
         }
     }
 
-    /// Human-readable name used by the breakdown UI and pickers.
+    /// ชื่อสำหรับแสดงผล ใช้ใน UI breakdown แบบทีละขั้นและ picker.
     var displayName: String {
         switch self {
         case .fixedAmount(let amount):

@@ -6,13 +6,13 @@
 import XCTest
 @testable import Discount
 
-/// On Top campaigns: Percentage by Item Category and Points (with the 20% cap).
+/// แคมเปญ On Top: เปอร์เซ็นต์ตามหมวดหมู่สินค้า และคะแนนสะสม (พร้อมเพดาน 20%).
 final class DiscountCalculatorOnTopTests: DiscountCalculatorTestCase {
 
-    // MARK: Percentage by Item Category
+    // MARK: เปอร์เซ็นต์ตามหมวดหมู่สินค้า
 
     func testCategoryPercentageUsesOnlyCategorySubtotalAsBasis() throws {
-        // Clothing subtotal = 1000 → 20% = 200 (NOT 20% of the 1350 total).
+        // Subtotal ของเสื้อผ้า = 1000 → 20% = 200 (ไม่ใช่ 20% ของยอดรวม 1350).
         let result = try calculate([.percentageByCategory(percent: 20, category: .clothing)])
         assertDecimalEqual(result.steps[0].discountApplied, 200)
         assertDecimalEqual(result.finalPrice, 1150)
@@ -29,7 +29,7 @@ final class DiscountCalculatorOnTopTests: DiscountCalculatorTestCase {
     }
 
     func testCategoryPercentageCannotExceedCurrentTotal() throws {
-        // Coupon first leaves only 50 THB; a raw 20% of clothing (200) is clamped to 50.
+        // คูปองใช้ก่อนเหลือยอดเพียง 50 บาท; 20% ของเสื้อผ้าดิบ ๆ (200) จึงถูก clamp เหลือ 50.
         let result = try calculate([
             .fixedAmount(amount: 1300),
             .percentageByCategory(percent: 20, category: .clothing),
@@ -48,7 +48,7 @@ final class DiscountCalculatorOnTopTests: DiscountCalculatorTestCase {
         )
     }
 
-    // MARK: Points — 1 pt = 1 THB, capped at 20% of CURRENT total
+    // MARK: คะแนนสะสม — 1 คะแนน = 1 บาท จำกัดไม่เกิน 20% ของยอดรวม "ปัจจุบัน"
 
     func testPointsBelowCapApplyOneToOne() throws {
         let result = try calculate([.points(count: 100)])
@@ -58,14 +58,14 @@ final class DiscountCalculatorOnTopTests: DiscountCalculatorTestCase {
     }
 
     func testPointsExactlyAtCapApplyFully() throws {
-        // Cap = 20% of 1350 = 270. Requesting exactly 270 applies fully.
+        // Cap = 20% ของ 1350 = 270. ขอใช้พอดี 270 จึงใช้ได้เต็มจำนวน.
         let result = try calculate([.points(count: 270)])
         assertDecimalEqual(result.steps[0].discountApplied, 270)
         assertDecimalEqual(result.finalPrice, 1080)
     }
 
     func testPointsAboveCapAreCappedAt20PercentOfCurrentTotal() throws {
-        // Cap = 270; requesting 300 still discounts only 270.
+        // Cap = 270; ขอใช้ 300 ก็ยังลดได้แค่ 270.
         let result = try calculate([.points(count: 300)])
         assertDecimalEqual(result.steps[0].discountApplied, 270)
         assertDecimalEqual(result.finalPrice, 1080)
@@ -73,7 +73,7 @@ final class DiscountCalculatorOnTopTests: DiscountCalculatorTestCase {
     }
 
     func testPointsCapIsBasedOnPostCouponTotalNotSubtotal() throws {
-        // Crucial spec detail: coupon runs FIRST, so the cap uses 850, not 1350.
+        // รายละเอียดสำคัญของ spec: คูปองถูกใช้ "ก่อน" จึงคำนวณ cap จาก 850 ไม่ใช่ 1350.
         // Cap = 20% × 850 = 170.
         let result = try calculate([
             .fixedAmount(amount: 500),
@@ -91,7 +91,7 @@ final class DiscountCalculatorOnTopTests: DiscountCalculatorTestCase {
     }
 
     func testNegativePointsThrow() {
-        // "Incorrect points input" edge case: negative points are rejected loudly.
+        // Edge case "input คะแนนไม่ถูกต้อง": คะแนนติดลบถูกปฏิเสธอย่างชัดเจน.
         assertThrows(.negativePoints, campaigns: [.points(count: -50)])
     }
 }

@@ -6,11 +6,11 @@
 import XCTest
 @testable import Discount
 
-/// Seasonal "for every X THB subtract Y THB" campaigns.
+/// แคมเปญตามฤดูกาล "ทุก X บาท หัก Y บาท".
 final class DiscountCalculatorSeasonalTests: DiscountCalculatorTestCase {
 
     func testSeasonalExactMultiples() throws {
-        // Total 900 with X=300 → exactly 3 buckets → 3 × 40 = 120 off.
+        // ยอดรวม 900 กับ X=300 → ได้พอดี 3 ก้อน → 3 × 40 = ลด 120.
         let cart900 = [CartItem(name: "Item", category: .electronics, price: 300, quantity: 3)]
         let result = try calculate([.seasonal(perAmount: 300, discount: 40)], cart: cart900)
         assertDecimalEqual(result.steps[0].discountApplied, 120)
@@ -18,15 +18,15 @@ final class DiscountCalculatorSeasonalTests: DiscountCalculatorTestCase {
     }
 
     func testSeasonalRemainderDoesNotEarnABucket() throws {
-        // floor(1350 / 300) = 4 (remainder 150 ignored) → 4 × 40 = 160 off.
+        // floor(1350 / 300) = 4 (เศษ 150 ไม่ถูกนับ) → 4 × 40 = ลด 160.
         let result = try calculate([.seasonal(perAmount: 300, discount: 40)])
         assertDecimalEqual(result.steps[0].discountApplied, 160)
         assertDecimalEqual(result.finalPrice, 1190)
     }
 
     func testSeasonalUsesCurrentPostCouponTotalForBuckets() throws {
-        // Buckets must be counted from the CURRENT total, not the subtotal:
-        // 10% coupon → 1215; floor(1215 / 300) = 4 → −160 → 1055.
+        // ต้องนับก้อนจากยอดรวม "ปัจจุบัน" ไม่ใช่ subtotal:
+        // คูปอง 10% → 1215; floor(1215 / 300) = 4 → −160 → 1055.
         let result = try calculate([
             .percentage(percent: 10),
             .seasonal(perAmount: 300, discount: 40),
@@ -37,7 +37,7 @@ final class DiscountCalculatorSeasonalTests: DiscountCalculatorTestCase {
     }
 
     func testSeasonalDiscountLargerThanTotalClampsToZero() throws {
-        // Edge case: 4 buckets × 800 = 3200 > 1350 → clamped, final price stays ≥ 0.
+        // Edge case: 4 ก้อน × 800 = 3200 > 1350 → clamp แล้วราคาสุดท้ายยัง ≥ 0.
         let result = try calculate([.seasonal(perAmount: 300, discount: 800)])
         assertDecimalEqual(result.steps[0].discountApplied, 1350)
         assertDecimalEqual(result.finalPrice, 0)

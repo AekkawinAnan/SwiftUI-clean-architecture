@@ -6,13 +6,13 @@
 import XCTest
 @testable import Discount
 
-/// Business Rules 1 & 2, the full-pipeline scenario, and remaining edge cases.
+/// กติกาข้อ 1 และ 2, ฉาก pipeline เต็ม และ edge cases ที่เหลือ.
 final class DiscountCalculatorRulesAndEdgeCaseTests: DiscountCalculatorTestCase {
 
-    // MARK: Rule 1 — max one campaign per category
+    // MARK: กติกาข้อ 1 — หนึ่งหมวดหมู่เลือกได้สูงสุด 1 แคมเปญ
 
     func testDuplicateCampaignsInSameCategoryKeepOnlyTheFirst() throws {
-        // Both are coupons → only the first (10%) survives.
+        // ทั้งคู่เป็นคูปอง → รอดมาเฉพาะตัวแรก (10%).
         let result = try calculate([
             .percentage(percent: 10),
             .fixedAmount(amount: 100),
@@ -21,19 +21,19 @@ final class DiscountCalculatorRulesAndEdgeCaseTests: DiscountCalculatorTestCase 
         assertDecimalEqual(result.finalPrice, 1215)
     }
 
-    // MARK: Rule 2 — strict Coupon → On Top → Seasonal order
+    // MARK: กติกาข้อ 2 — ลำดับคูปอง → On Top → Seasonal อย่างเคร่งครัด
 
     func testCampaignsAreAlwaysOrderedCouponOnTopSeasonal() throws {
         let result = try calculate([
-            .seasonal(perAmount: 300, discount: 40),   // given out of order…
-            .points(count: 243),                       // …on top second…
-            .percentage(percent: 10),                  // …coupon last.
+            .seasonal(perAmount: 300, discount: 40),   // ส่งมาผิดลำดับ…
+            .points(count: 243),                       // …on top เป็นตัวที่สอง…
+            .percentage(percent: 10),                  // …และคูปองมาท้ายสุด.
         ])
 
-        // Order is enforced regardless of input order.
+        // ลำดับถูกบังคับเสมอ ไม่ว่า input จะส่งมาตามลำดับใด.
         XCTAssertEqual(result.steps.map(\.campaign.category), [.coupon, .onTop, .seasonal])
 
-        // And equals the result computed in canonical order.
+        // และต้องเท่ากับผลลัพธ์ที่คำนวณจากลำดับมาตรฐาน.
         let canonical = try calculate([
             .percentage(percent: 10),
             .points(count: 243),
@@ -44,7 +44,7 @@ final class DiscountCalculatorRulesAndEdgeCaseTests: DiscountCalculatorTestCase 
     }
 
     func testOutputOfEachStepFeedsTheNextStep() throws {
-        // Chain check on amountBefore/amountAfter linkage.
+        // ตรวจความต่อเนื่องของ amountBefore/amountAfter ระหว่างขั้น.
         let result = try calculate([
             .percentage(percent: 10),                  // 1350 → 1215
             .points(count: 300),                       // cap 243 → 972
@@ -60,11 +60,11 @@ final class DiscountCalculatorRulesAndEdgeCaseTests: DiscountCalculatorTestCase 
         assertDecimalEqual(result.steps[2].amountAfter, 852)
     }
 
-    // MARK: Full pipeline scenario (the worked example)
+    // MARK: ฉาก pipeline เต็ม (ตัวอย่างที่คำนวณครบทุกขั้น)
 
     func testFullPipelineScenario() throws {
-        // Subtotal 1350 → 10% coupon → 1215 → 300 pts capped at 20% (=243) → 972
-        // → seasonal every-300-get-40: floor(972/300)=3 → −120 → FINAL 852.
+        // Subtotal 1350 → คูปอง 10% → 1215 → คะแนน 300 โดน cap ที่ 20% (=243) → 972
+        // → seasonal ทุก 300 ลด 40: floor(972/300)=3 → −120 → ราคาสุดท้าย 852.
         let result = try calculate([
             .percentage(percent: 10),
             .points(count: 300),
@@ -75,7 +75,7 @@ final class DiscountCalculatorRulesAndEdgeCaseTests: DiscountCalculatorTestCase 
         assertDecimalEqual(result.totalDiscount, 498)
     }
 
-    // MARK: Empty cart edge cases
+    // MARK: Edge cases ของตะกร้าว่าง
 
     func testEmptyCartWithNoCampaigns() throws {
         let result = try calculate([], cart: [])

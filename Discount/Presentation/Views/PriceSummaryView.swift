@@ -5,7 +5,7 @@
 
 import SwiftUI
 
-/// Subtotal → step-by-step discount breakdown (with explanatory notes) → final price.
+/// Subtotal → breakdown ส่วนลดแบบทีละขั้น (พร้อมคำอธิบาย) → ราคาสุดท้าย.
 struct PriceSummaryView: View {
     let result: DiscountCalculationResult
 
@@ -47,7 +47,7 @@ struct PriceSummaryView: View {
         .padding(.vertical, 4)
     }
 
-    // MARK: Step row
+    // MARK: แถวแสดงผลแต่ละขั้น
 
     private func stepRow(_ step: DiscountStep) -> some View {
         VStack(alignment: .leading, spacing: 2) {
