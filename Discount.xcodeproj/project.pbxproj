@@ -40,11 +40,6 @@
 			path = DiscountTests;
 			sourceTree = "<group>";
 		};
-		82F28CB3303C1F5B00323F9A /* DiscountUITests */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			path = DiscountUITests;
-			sourceTree = "<group>";
-		};
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -77,7 +72,6 @@
 			children = (
 				82F28C9B303C1F5A00323F9A /* Discount */,
 				82F28CA9303C1F5B00323F9A /* DiscountTests */,
-				82F28CB3303C1F5B00323F9A /* DiscountUITests */,
 				82F28C9A303C1F5A00323F9A /* Products */,
 			);
 			sourceTree = "<group>";
@@ -152,9 +146,6 @@
 			);
 			dependencies = (
 				82F28CB2303C1F5B00323F9A /* PBXTargetDependency */,
-			);
-			fileSystemSynchronizedGroups = (
-				82F28CB3303C1F5B00323F9A /* DiscountUITests */,
 			);
 			name = DiscountUITests;
 			packageProductDependencies = (
