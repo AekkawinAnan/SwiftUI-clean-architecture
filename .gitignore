@@ -1,0 +1,30 @@
+# Xcode
+.DS_Store
+*.xcuserstate
+*.xcuserdata/
+*.xcworkspace/xcuserdata/
+xcuserdata/
+UserInterfaceState.xcuserstate
+Breakpoints_v2.xcbkptlist
+*.perspectivev3
+
+# Build products
+build/
+DerivedData/
+*.hmap
+*.ipa
+*.dSYM.zip
+*.dSYM
+
+# Swift
+.swiftpm/
+.build/
+
+# CocoaPods
+Pods/
+
+# fastlane
+fastlane/report.xml
+fastlane/Preview.html
+fastlane/screenshots/**/*.png
+fastlane/test_output/
