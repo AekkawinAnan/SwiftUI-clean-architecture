@@ -80,31 +80,3 @@ struct PriceSummaryView: View {
         }
     }
 }
-
-#Preview {
-    List {
-        Section("Summary") {
-            PriceSummaryView(
-                result: DiscountCalculationResult(
-                    subtotal: 1350,
-                    steps: [
-                        DiscountStep(
-                            campaign: .percentage(percent: 10),
-                            amountBefore: 1350,
-                            discountApplied: 135,
-                            amountAfter: 1215
-                        ),
-                        DiscountStep(
-                            campaign: .points(count: 300),
-                            amountBefore: 1215,
-                            discountApplied: 243,
-                            amountAfter: 972,
-                            note: "Capped at 20% of current total"
-                        ),
-                    ],
-                    finalPrice: 852
-                )
-            )
-        }
-    }
-}

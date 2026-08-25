@@ -62,10 +62,3 @@ private extension ItemCategory {
         }
     }
 }
-
-#Preview {
-    List {
-        CartItemRowView(item: CartItem.mockCart[0])
-        CartItemRowView(item: CartItem.mockCart[3])
-    }
-}

@@ -68,7 +68,3 @@ struct CartView: View {
         viewModel.reset()
     }
 }
-
-#Preview {
-    CartView()
-}

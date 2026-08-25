@@ -95,11 +95,3 @@ struct DiscountSelectionSection: View {
         }
     }
 }
-
-#Preview {
-    List {
-        Section("Discount Campaigns") {
-            DiscountSelectionSection(viewModel: CartViewModel())
-        }
-    }
-}
