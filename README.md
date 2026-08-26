@@ -22,11 +22,14 @@
 
 | หมวดหมู่ | แคมเปญ | สูตร |
 |---|---|---|
-| Coupon | Fixed Amount | `total − amount` (clamp ที่ 0) |
-| Coupon | Percentage | `total × percent / 100` |
-| On Top | % by Item Category | `(subtotal เฉพาะหมวด) × percent / 100` แล้วหักจากยอดปัจจุบัน |
-| On Top | Points | `min(คะแนน, 20% × ยอดปัจจุบัน)` |
-| Seasonal | Every X get Y | `floor(total / X) × Y` (เศษไม่นับ) |
+| Coupon | Fixed Amount | ลด = `amount` → **หักจากยอดปัจจุบัน** (clamp ไม่ให้ต่ำกว่า 0) |
+| Coupon | Percentage | ลด = `total × percent / 100` → **หักจากยอดปัจจุบัน** |
+| On Top | % by Item Category | ลด = `(subtotal เฉพาะหมวด) × percent / 100` → **หักจากยอดปัจจุบัน** (ฐานคือยอดเฉพาะหมวด ไม่ใช่ยอดรวม) |
+| On Top | Points | ลด = `min(คะแนน, 20% × ยอดปัจจุบัน)` → **หักจากยอดปัจจุบัน** |
+| Seasonal | Every X get Y | ลด = `floor(ยอดปัจจุบัน / X) × Y` (เศษไม่นับ) → **หักจากยอดปัจจุบัน** |
+
+> 📌 ทุกแคมเปญคำนวณ "ยอดส่วนลด" จากสูตรข้างบน แล้ว**หักออกจากยอดรวมปัจจุบัน**เสมอ
+> (ยอดปัจจุบัน = ผลลัพธ์ของ step ก่อนหน้า — ตามกติกาข้อ 2)
 
 ---
 
